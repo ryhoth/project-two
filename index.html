@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src=apiKey.js></script>
+    <link rel="stylesheet" href="style.css" charset="utf-8">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.js"></script>
+
+    <script src='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.js'></script>
+    <link href='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.css' rel='stylesheet' />
+
+
+  </head>
+
+  <body>
+    <div class="all-container">
+      <form action="">
+        <h1 class="topHeader">Rated</h1>
+        <div class="inputs" id="inputContainerBoroCuisine"></div>
+        <div class="inputs boxes" id="inputContainerNameAddress"></div>
+        <div class="inputs" id="inputContainerDate"></div>
+        <button type="button" name="button" class="items" id="submit">Show me Rating</button>
+        <div id="display"></div>
+      </form>
+    </div>
+    <div id='map'></div>
+
+  <!-- mapbox -->
+    <!-- <script>
+      L.mapbox.accessToken = '<your access token here>';
+      var map = L.mapbox.map('map', 'mapbox.streets')
+      .setView([40, -74.50], 9);
+    </script> -->
+
+    <!-- Handlebars for XXXX -->
+  <script id="nycHealthHandlebars" type="text/x-handlebars-template">
+
+      <h1 class="subHeader">Complaint Cards</h1>
+      <ul>
+        {{#each resto}}
+          <br>
+          <div class="cards">
+          <li>Grade:{{grade}} ({{critical_flag}}) {{grade_date}} </li>
+          <li>{{dba}} ({{cuisine_description}})</li>
+          <li>Inspection_date: {{inspection_date}}</li>
+          <li>Violation: {{violation_code}} {{violation_description}}</li>
+          <li>Score: {{score}}</li>
+          <li>camis: {{camis}}</li>
+          <li>{{building}} {{street}}</li>
+          <li>{{boro}}, NY {{zipcode}}</li>
+          <li>Phone: {{phone}}</li>
+
+          <!-- <li>Inspection_type: {{inspection_type}}</li>  -->
+          <!-- <li>Record Date: {{record_date}}</li> -->
+          <!-- <li>Action: {{action}}</li> -->
+          </div>
+        {{/each}}
+      </ul>
+  </script>
+
+  <script type="text/javascript" src="app.js"></script>
+  </body>
+</html>
