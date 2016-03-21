@@ -11,11 +11,36 @@ var grand = {
   fsCandidateToNYC: "",
   bothRestaurantEndPoint: "",
   k: 0,
+  building:"",
+  street: "",
+  pointOnMap:function(longitude, latitude, color){
+    L.mapbox.featureLayer({
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [
+          latitude,
+          longitude
+        ]
+      },
+      properties: {
+        title: 'Restaurant',
+        'marker-size': 'large',
+        'marker-color': color,
+        'marker-symbol': 'restaurant'
+      }
+    }).addTo(grand.map)
+  },
   fsAction: function (fsResponse) {
     console.log("fs action worked!");
     console.log("fs response: " + fsResponse);
       /* first call to NYC with foursquare venue */
       console.log(fsResponse);
+
+      for (var i = 0; i < 5; i++) {
+        grand.pointOnMap(fsResponse.response.venues[i].location.lat, fsResponse.response.venues[i].location.lng, '#0000FF');
+      }
+
       grand.fsCandidateToNYC = escape( fsResponse.response.venues[0].name ); //k
       console.log("This is our candidate responese: " + grand.fsCandidateToNYC);
       grand.bothRestaurantEndPoint = 'http://data.cityofnewyork.us/resource/xx67-kt59.json?'+ '&dba=' + grand.fsCandidateToNYC.replace(" ", "+");
@@ -27,15 +52,17 @@ var grand = {
           console.log("checking FS resto in the NYC Data");
           console.log("Candidate: " + grand.fsCandidateToNYC);
           console.log("data to mine if restaurant is rated A or Not: " + response);
-          console.log(response[grand.k].dba);
-          console.log(response[grand.k].grade);
-          if ( (response[grand.k].grade === "A") && (response[grand.k].critical_flag === "Not Critical")  ) {
-              console.log("Restaurant good! Eat at " + response[grand.k].dba);
-          } else {
-            console.log("Critical");
-            grand.k +=1;
-            grand.fsAction();
-          }
+          console.log(response[0].dba);
+          console.log(response[0].grade);
+
+          //checking if restaurant rating is non-critical + rated A
+          // if ( (response[grand.k].grade === "A") && (response[grand.k].critical_flag === "Not Critical")  ) {
+          //     console.log("Restaurant good! Eat at " + response[grand.k].dba);
+          // } else {
+          //   console.log("Critical");
+          //   grand.k +=1;
+          //   grand.fsAction();
+          // }
         }
       });
   },
@@ -59,6 +86,8 @@ var grand = {
         console.log("Restaurant good! Eat at " + dataTEST[0].dba);
     } else {
       console.log("Critical");
+      grand.k +=1;
+      grand.fsAction();
     }
   },
   geoLocateUser: function(){
@@ -92,7 +121,6 @@ var grand = {
         'marker-symbol': 'pitch'
       }
     }).addTo(grand.map);
-
       var fsEndPoint = 'https://api.foursquare.com/v2/venues/search?oauth_token=' + ajaxInfo.fsKey + '&limit=' + grand.fsQueryLimit  + '&ll=' + grand.userLat + ',' + grand.userLong + '&query=' + grand.fsQueryDesc;
       grand.AjaxModel(grand.fsAction, fsEndPoint);
       console.log("B:" +fsEndPoint);
@@ -100,11 +128,15 @@ var grand = {
   },
   NYCrestaurantEndPoint: "",
   restaurantAction: function(restaurantResponse){
-    grand.geocodeURL = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + building.value.replace(" ","+") + '+' + street.value.replace(" ", "+") +',+New+York,+NY&key=' + ajaxInfo.googKey;
+    grand.geocodeURL = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + grand.building + '+' + grand.street +',+New+York,+NY&key=' + ajaxInfo.googKey;
     $.ajax({
       url: grand.geocodeURL,
       success: function(longLatFromAddresss){
-        console.log("YO"+longLatFromAddresss);
+        console.log("YO google geocoder"+longLatFromAddresss);
+        console.log(longLatFromAddresss);
+        console.log("the resto lat"+longLatFromAddresss.results[0].geometry.location.lat);
+        console.log("the resto lng"+longLatFromAddresss.results[0].geometry.location.lng);
+        grand.pointOnMap(longLatFromAddresss.results[0].geometry.location.lat , longLatFromAddresss.results[0].geometry.location.lng, '#9CBA7F' ); //,
         //   L.mapbox.featureLayer({
         //   type: 'Feature',
         //   geometry: {
@@ -146,12 +178,14 @@ var grand = {
     }
     if (building.value.length > 0) {
       NYCrestaurantEndPoint += '&building=' + building.value.replace(" ", "+");
-    }
-    if (Name.value.length > 0) {
-      NYCrestaurantEndPoint += '&dba=' + escape(Name.value.replace(" ", "+"));
+      grand.building = building.value.replace(" ", "+");
     }
     if (street.value.length > 0) {
       NYCrestaurantEndPoint += '&street=' + street.value.replace(" ", "+");
+      grand.street = street.value.replace(" ", "+");
+    }
+    if (Name.value.length > 0) {
+      NYCrestaurantEndPoint += '&dba=' + escape(Name.value.replace(" ", "+"));
     }
     if (zip.value.length > 0) {
       NYCrestaurantEndPoint += '&zipcode=' + zip.value.replace(" ", "+");
