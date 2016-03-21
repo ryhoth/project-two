@@ -1,53 +1,43 @@
 console.log("loaded");
 
-// google mpas api
-// google search api
-// mapbox api
 
 var grand = {
+  map :"",
   userLong: "",
   userLat: "",
+  geocodeURL: "",
   fsQueryLimit: 20,
   fsQueryDesc: "food",
   fsCandidateToNYC: "",
-  // fsEndPoint: ,
+  bothRestaurantEndPoint: "",
+  k: 0,
   fsAction: function (fsResponse) {
     console.log("fs action worked!");
     console.log("fs response: " + fsResponse);
-    fsCandidateToNYC = fsResponse.response.venues[1].name;
-    console.log("This is our candidate responese: " + fsCandidateToNYC);
-    var fsRestaurantEndPoint = 'http://data.cityofnewyork.us/resource/xx67-kt59.json?'+ '&dba=' + fsCandidateToNYC.replace(" ", "+");
-    console.log("This is our beauriful NYC endPoint that has foursquare restaurant :" + fsRestaurantEndPoint);
-    grand.AjaxModel(grand.checkRestaurantRating, fsRestaurantEndPoint);
-  },
-  checkRestaurantRating: function(dataTEST){
-    console.log("checking FS resto in the NYC Data");
-    console.log("Candidate: " + fsCandidateToNYC);
-    console.log("data to mine if restaurant is rated A or Not: " + dataTEST);
-    // console.log(dataTEST[0].dba);
-    // console.log(dataTEST[0].grade);
-    // console.log(dataTEST[0].critical_flag);
-    // if ( (dataTEST[0].grade === "A") && (dataTEST[0].critical_flag === "Not Critical")  ) {
-    //     console.log("Restaurant good! Eat at " + dataTEST[0].dba);
-    // }
-  },
-  geoLocateUser: function(){
-    navigator.geolocation.getCurrentPosition(function(position) {
-      console.log("user latitude" + position.coords.latitude);
-      console.log("user longitude" + position.coords.longitude);
-      grand.userLat = position.coords.latitude;
-      grand.userLong = position.coords.longitude;
-      var fsEndPoint = 'https://api.foursquare.com/v2/venues/search?oauth_token=' + ajaxInfo.fsKey + '&limit=' + grand.fsQueryLimit + '&query=' + grand.fsQueryDesc + '&ll=' + grand.userLat + ',' + grand.userLong;
-      grand.AjaxModel(grand.fsAction, fsEndPoint);
-    });
-  },
-  restaurantEndPoint: "",
-  restaurantAction: function(restaurantResponse){
-    console.log("resto action worked!");
-    var context = {};
-    context.resto = restaurantResponse;
-    console.log(context);
-    guiObj.handlebars(context, 'nycHealthHandlebars', 'display');
+      /* first call to NYC with foursquare venue */
+      console.log(fsResponse);
+      grand.fsCandidateToNYC = escape( fsResponse.response.venues[0].name ); //k
+      console.log("This is our candidate responese: " + grand.fsCandidateToNYC);
+      grand.bothRestaurantEndPoint = 'http://data.cityofnewyork.us/resource/xx67-kt59.json?'+ '&dba=' + grand.fsCandidateToNYC.replace(" ", "+");
+      console.log("C: This is our beauriful NYC endPoint that has foursquare restaurant :" + grand.bothRestaurantEndPoint);
+      // grand.AjaxModel(grand.checkRestaurantRating, bothRestaurantEndPoint);
+      $.ajax({
+        url: grand.bothRestaurantEndPoint,
+        success: function(response){
+          console.log("checking FS resto in the NYC Data");
+          console.log("Candidate: " + grand.fsCandidateToNYC);
+          console.log("data to mine if restaurant is rated A or Not: " + response);
+          console.log(response[grand.k].dba);
+          console.log(response[grand.k].grade);
+          if ( (response[grand.k].grade === "A") && (response[grand.k].critical_flag === "Not Critical")  ) {
+              console.log("Restaurant good! Eat at " + response[grand.k].dba);
+          } else {
+            console.log("Critical");
+            grand.k +=1;
+            grand.fsAction();
+          }
+        }
+      });
   },
   AjaxModel: function(functionToCall, endPoint) {
      $.ajax({
@@ -58,37 +48,120 @@ var grand = {
       },
     });
   },
+  checkRestaurantRating: function(dataTEST){
+    console.log("checking FS resto in the NYC Data");
+    console.log("Candidate: " + fsCandidateToNYC);
+    console.log("data to mine if restaurant is rated A or Not: " + dataTEST);
+    console.log(dataTEST[0].dba);
+    console.log(dataTEST[0].grade);
+    console.log(dataTEST[0].critical_flag);
+    if ( (dataTEST[0].grade === "A") && (dataTEST[0].critical_flag === "Not Critical")  ) {
+        console.log("Restaurant good! Eat at " + dataTEST[0].dba);
+    } else {
+      console.log("Critical");
+    }
+  },
+  geoLocateUser: function(){
+    navigator.geolocation.getCurrentPosition(function(position) {
+      console.log("user latitude" + position.coords.latitude);
+      console.log("user longitude" + position.coords.longitude);
+      grand.userLat = position.coords.latitude;
+      grand.userLong = position.coords.longitude;
+
+      L.mapbox.accessToken = ajaxInfo.mbKey;
+      grand.map = L.mapbox.map('map', 'mapbox.streets').setView([grand.userLat, grand.userLong], 16);
+
+      var geocoder = L.mapbox.geocoder('mapbox.places')
+
+      L.mapbox.featureLayer({
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [
+          grand.userLong,
+          grand.userLat
+        ]
+      },
+      properties: {
+        title: 'You are here',
+        // description: '1718 14th St NW, Washington, DC',
+        // one can customize markers by adding simplestyle properties
+        // https://www.mapbox.com/guides/an-open-platform/#simplestyle
+        'marker-size': 'large',
+        'marker-color': '#f86767',
+        'marker-symbol': 'pitch'
+      }
+    }).addTo(grand.map);
+
+      var fsEndPoint = 'https://api.foursquare.com/v2/venues/search?oauth_token=' + ajaxInfo.fsKey + '&limit=' + grand.fsQueryLimit  + '&ll=' + grand.userLat + ',' + grand.userLong + '&query=' + grand.fsQueryDesc;
+      grand.AjaxModel(grand.fsAction, fsEndPoint);
+      console.log("B:" +fsEndPoint);
+    });
+  },
+  NYCrestaurantEndPoint: "",
+  restaurantAction: function(restaurantResponse){
+    grand.geocodeURL = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + building.value.replace(" ","+") + '+' + street.value.replace(" ", "+") +',+New+York,+NY&key=' + ajaxInfo.googKey;
+    $.ajax({
+      url: grand.geocodeURL,
+      success: function(longLatFromAddresss){
+        console.log("YO"+longLatFromAddresss);
+        //   L.mapbox.featureLayer({
+        //   type: 'Feature',
+        //   geometry: {
+        //     type: 'Point',
+        //     coordinates: [
+        //       -73.99446653627794,
+        //       40.75992261131457
+        //     ]
+        //   },
+        //   properties: {
+        //     title: 'Restaurant',
+        //     'marker-size': 'large',
+        //     'marker-color': '#9CBA7F',
+        //     'marker-symbol': 'restaurant'
+        //   }
+        // }).addTo(grand.map);
+      }
+    });
+    console.log(grand.geocodeURL);
+
+    console.log("resto action worked!");
+    var context = {};
+    context.resto = restaurantResponse;
+    console.log(context);
+    guiObj.handlebars(context, 'nycHealthHandlebars', 'display');
+  },
   submit: document.getElementById('submit'),
   submitEvent: submit.addEventListener('click', function(){
-    restaurantEndPoint = 'http://data.cityofnewyork.us/resource/xx67-kt59.json?';
+    NYCrestaurantEndPoint = 'http://data.cityofnewyork.us/resource/xx67-kt59.json?';
     var yearSelected = document.getElementById('year-dropdown');
     var monthSelected = document.getElementById('month-dropdown');
     var daySelected = document.getElementById('day-dropdown');
     if ((yearSelected.value.length > 0) && (monthSelected.value.length > 0) && (daySelected.value.length > 0) ) {
-      restaurantEndPoint += '$where=(inspection_date>=%27' + yearSelected.value + '-' + monthSelected.value + '-' + daySelected.value +'%27)';
+      NYCrestaurantEndPoint += '$where=(inspection_date>=%27' + yearSelected.value + '-' + monthSelected.value + '-' + daySelected.value +'%27)';
     }
     var boroSelected = document.getElementById('boro-dropdown');
     if (boroSelected.value.length > 0 ){ //We could force the user to choose a borough later
-      restaurantEndPoint += '&boro=' + boroSelected.value.replace(" ", "+");
+      NYCrestaurantEndPoint += '&boro=' + boroSelected.value.replace(" ", "+");
     }
     if (building.value.length > 0) {
-      restaurantEndPoint += '&building=' + building.value.replace(" ", "+");
+      NYCrestaurantEndPoint += '&building=' + building.value.replace(" ", "+");
     }
     if (Name.value.length > 0) {
-      restaurantEndPoint += '&dba=' + Name.value.replace(" ", "+");
+      NYCrestaurantEndPoint += '&dba=' + escape(Name.value.replace(" ", "+"));
     }
     if (street.value.length > 0) {
-      restaurantEndPoint += '&street=' + street.value.replace(" ", "+");
+      NYCrestaurantEndPoint += '&street=' + street.value.replace(" ", "+");
     }
     if (zip.value.length > 0) {
-      restaurantEndPoint += '&zipcode=' + zip.value.replace(" ", "+");
+      NYCrestaurantEndPoint += '&zipcode=' + zip.value.replace(" ", "+");
     }
     var cuisineSelected = document.getElementById('cuisine-dropdown');
     if (cuisineSelected.value.length > 0) {
-      restaurantEndPoint += '&cuisine_description=' + cuisineSelected.value.replace(" ", "+") + "+";
+      NYCrestaurantEndPoint += '&cuisine_description=' + cuisineSelected.value.replace(" ", "+") + "+";
     }
-    console.log(restaurantEndPoint);
-    grand.AjaxModel( grand.restaurantAction , restaurantEndPoint );
+    console.log("A: " + NYCrestaurantEndPoint);
+    grand.AjaxModel( grand.restaurantAction , NYCrestaurantEndPoint );
   }),
 };
 
@@ -233,5 +306,8 @@ var guiObj = {
    "German", "French", "Pizza/Italian", "Mexican",
     "Spanish", "Café/Coffee/Tea"],
 };
+
+
+
 
 guiObj.createGui();

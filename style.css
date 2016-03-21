@@ -1,20 +1,30 @@
 * {
   list-style-type: none;
+  box-sizing: border-box;
 }
 
 body {
   background-color: #87CEFA;
 }
 
+.container {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  flex-direction: row;
+}
+
 .all-container {
   width: 44vw;
-  margin: 0 auto;
+  /*margin: 0 auto;*/
   padding: 4vw;
   /*border-radius: 10%;*/
   border: 1vw solid grey;
   background-color: white;
   display: flex;
-  align-content: space-between;
+  align-content: center;
+  justify-content: flex-start;
+  flex-direction: row;
 }
 
 .cards {
@@ -28,7 +38,16 @@ body {
   justify-content: center;
   text-decoration: none;
   width: 36vw;
-  /*border-radius: 10%;*/
+  height: 30vw;
+}
+
+.map {
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:30vw;
+  height: 30vw;
+  border: 0.5vw solid grey;
 }
 
 .topHeader {
