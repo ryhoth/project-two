@@ -1,6 +1,5 @@
 console.log("loaded");
 
-
 var grand = {
   map :"",
   userLong: "",
@@ -13,6 +12,46 @@ var grand = {
   k: 0,
   building:"",
   street: "",
+  NYCrestaurantEndPoint: "",
+
+  geoLocateUser: function(){
+    navigator.geolocation.getCurrentPosition(function(position) {
+      console.log("user latitude" + position.coords.latitude);
+      console.log("user longitude" + position.coords.longitude);
+      grand.userLat = position.coords.latitude;
+      grand.userLong = position.coords.longitude;
+
+      grand.putMapOnTheScreen();
+
+      var geocoder = L.mapbox.geocoder('mapbox.places')
+
+      L.mapbox.featureLayer({
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [
+          grand.userLong,
+          grand.userLat
+        ]
+      },
+      properties: {
+        title: 'You are here',
+        'marker-size': 'large',
+        'marker-color': '#f86767',
+        'marker-symbol': 'pitch'
+      }
+    }).addTo(grand.map);
+      var fsEndPoint = 'https://api.foursquare.com/v2/venues/search?oauth_token=' + ajaxInfo.fsKey + '&limit=' + grand.fsQueryLimit  + '&ll=' + grand.userLat + ',' + grand.userLong + '&query=' + grand.fsQueryDesc;
+      grand.AjaxModel(grand.fsAction, fsEndPoint);
+      console.log("B:" +fsEndPoint);
+    });
+  },
+
+  putMapOnTheScreen: function(){
+    L.mapbox.accessToken = ajaxInfo.mbKey;
+    grand.map = L.mapbox.map('map', 'mapbox.streets').setView([grand.userLat, grand.userLong], 16);
+  },
+
   pointOnMap:function(longitude, latitude, color){
     L.mapbox.featureLayer({
       type: 'Feature',
@@ -31,140 +70,22 @@ var grand = {
       }
     }).addTo(grand.map)
   },
-  fsAction: function (fsResponse) {
-    console.log("fs action worked!");
-    console.log("fs response: " + fsResponse);
-      /* first call to NYC with foursquare venue */
-      console.log(fsResponse);
 
-      for (var i = 0; i < 5; i++) {
-        grand.pointOnMap(fsResponse.response.venues[i].location.lat, fsResponse.response.venues[i].location.lng, '#0000FF');
-      }
-
-      grand.fsCandidateToNYC = escape( fsResponse.response.venues[0].name ); //k
-      console.log("This is our candidate responese: " + grand.fsCandidateToNYC);
-      grand.bothRestaurantEndPoint = 'http://data.cityofnewyork.us/resource/xx67-kt59.json?'+ '&dba=' + grand.fsCandidateToNYC.replace(" ", "+");
-      console.log("C: This is our beauriful NYC endPoint that has foursquare restaurant :" + grand.bothRestaurantEndPoint);
-      // grand.AjaxModel(grand.checkRestaurantRating, bothRestaurantEndPoint);
-      $.ajax({
-        url: grand.bothRestaurantEndPoint,
-        success: function(response){
-          console.log("checking FS resto in the NYC Data");
-          console.log("Candidate: " + grand.fsCandidateToNYC);
-          console.log("data to mine if restaurant is rated A or Not: " + response);
-          console.log(response[0].dba);
-          console.log(response[0].grade);
-
-          //checking if restaurant rating is non-critical + rated A
-          // if ( (response[grand.k].grade === "A") && (response[grand.k].critical_flag === "Not Critical")  ) {
-          //     console.log("Restaurant good! Eat at " + response[grand.k].dba);
-          // } else {
-          //   console.log("Critical");
-          //   grand.k +=1;
-          //   grand.fsAction();
-          // }
-        }
-      });
-  },
-  AjaxModel: function(functionToCall, endPoint) {
-     $.ajax({
-      url: endPoint,
-      success: function(response) {
-        functionToCall(response);
-        console.log(response);
-      },
-    });
-  },
-  checkRestaurantRating: function(dataTEST){
-    console.log("checking FS resto in the NYC Data");
-    console.log("Candidate: " + fsCandidateToNYC);
-    console.log("data to mine if restaurant is rated A or Not: " + dataTEST);
-    console.log(dataTEST[0].dba);
-    console.log(dataTEST[0].grade);
-    console.log(dataTEST[0].critical_flag);
-    if ( (dataTEST[0].grade === "A") && (dataTEST[0].critical_flag === "Not Critical")  ) {
-        console.log("Restaurant good! Eat at " + dataTEST[0].dba);
-    } else {
-      console.log("Critical");
-      grand.k +=1;
-      grand.fsAction();
-    }
-  },
-  geoLocateUser: function(){
-    navigator.geolocation.getCurrentPosition(function(position) {
-      console.log("user latitude" + position.coords.latitude);
-      console.log("user longitude" + position.coords.longitude);
-      grand.userLat = position.coords.latitude;
-      grand.userLong = position.coords.longitude;
-
-      L.mapbox.accessToken = ajaxInfo.mbKey;
-      grand.map = L.mapbox.map('map', 'mapbox.streets').setView([grand.userLat, grand.userLong], 16);
-
-      var geocoder = L.mapbox.geocoder('mapbox.places')
-
-      L.mapbox.featureLayer({
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [
-          grand.userLong,
-          grand.userLat
-        ]
-      },
-      properties: {
-        title: 'You are here',
-        // description: '1718 14th St NW, Washington, DC',
-        // one can customize markers by adding simplestyle properties
-        // https://www.mapbox.com/guides/an-open-platform/#simplestyle
-        'marker-size': 'large',
-        'marker-color': '#f86767',
-        'marker-symbol': 'pitch'
-      }
-    }).addTo(grand.map);
-      var fsEndPoint = 'https://api.foursquare.com/v2/venues/search?oauth_token=' + ajaxInfo.fsKey + '&limit=' + grand.fsQueryLimit  + '&ll=' + grand.userLat + ',' + grand.userLong + '&query=' + grand.fsQueryDesc;
-      grand.AjaxModel(grand.fsAction, fsEndPoint);
-      console.log("B:" +fsEndPoint);
-    });
-  },
-  NYCrestaurantEndPoint: "",
-  restaurantAction: function(restaurantResponse){
+  submitRestaurantForm: function(NYCdbResponse1){
     grand.geocodeURL = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + grand.building + '+' + grand.street +',+New+York,+NY&key=' + ajaxInfo.googKey;
     $.ajax({
       url: grand.geocodeURL,
       success: function(longLatFromAddresss){
-        console.log("YO google geocoder"+longLatFromAddresss);
-        console.log(longLatFromAddresss);
-        console.log("the resto lat"+longLatFromAddresss.results[0].geometry.location.lat);
-        console.log("the resto lng"+longLatFromAddresss.results[0].geometry.location.lng);
-        grand.pointOnMap(longLatFromAddresss.results[0].geometry.location.lat , longLatFromAddresss.results[0].geometry.location.lng, '#9CBA7F' ); //,
-        //   L.mapbox.featureLayer({
-        //   type: 'Feature',
-        //   geometry: {
-        //     type: 'Point',
-        //     coordinates: [
-        //       -73.99446653627794,
-        //       40.75992261131457
-        //     ]
-        //   },
-        //   properties: {
-        //     title: 'Restaurant',
-        //     'marker-size': 'large',
-        //     'marker-color': '#9CBA7F',
-        //     'marker-symbol': 'restaurant'
-        //   }
-        // }).addTo(grand.map);
+        grand.pointOnMap(longLatFromAddresss.results[0].geometry.location.lat , longLatFromAddresss.results[0].geometry.location.lng, '#9CBA7F' );
       }
     });
-    console.log(grand.geocodeURL);
-
-    console.log("resto action worked!");
     var context = {};
-    context.resto = restaurantResponse;
-    console.log(context);
+    context.resto = NYCdbResponse1;
     guiObj.handlebars(context, 'nycHealthHandlebars', 'display');
   },
-  submit: document.getElementById('submit'),
-  submitEvent: submit.addEventListener('click', function(){
+  
+  submitBtn: document.getElementById('submit'),
+  submitEvent: submitBtn.addEventListener('click', function(){
     NYCrestaurantEndPoint = 'http://data.cityofnewyork.us/resource/xx67-kt59.json?';
     var yearSelected = document.getElementById('year-dropdown');
     var monthSelected = document.getElementById('month-dropdown');
@@ -194,12 +115,66 @@ var grand = {
     if (cuisineSelected.value.length > 0) {
       NYCrestaurantEndPoint += '&cuisine_description=' + cuisineSelected.value.replace(" ", "+") + "+";
     }
-    console.log("A: " + NYCrestaurantEndPoint);
-    grand.AjaxModel( grand.restaurantAction , NYCrestaurantEndPoint );
+    grand.AjaxModel( grand.submitRestaurantForm , NYCrestaurantEndPoint );
   }),
+  AjaxModel: function(functionToCall, endPoint) {
+     $.ajax({
+      url: endPoint,
+      success: function(response) {
+        functionToCall(response);
+      },
+    });
+  },
+
+  checkRestaurantRating: function(dataTEST){
+    if ( (dataTEST[0].grade === "A") && (dataTEST[0].critical_flag === "Not Critical")  ) {
+        console.log("Restaurant good! Eat at " + dataTEST[0].dba);
+    } else {
+      console.log("Critical");
+      grand.k +=1;
+      grand.fsAction();
+    }
+  },
+
+    fsAction: function (fsResponse) {
+      console.log("fs action worked!");
+      console.log("fs response: " + fsResponse);
+        /* first call to NYC with foursquare venue */
+        console.log(fsResponse);
+
+        for (var i = 0; i < 5; i++) {
+          grand.pointOnMap(fsResponse.response.venues[i].location.lat, fsResponse.response.venues[i].location.lng, '#0000FF');
+        }
+
+        grand.fsCandidateToNYC = escape( fsResponse.response.venues[0].name ); //k
+        console.log("This is our candidate responese: " + grand.fsCandidateToNYC);
+        grand.bothRestaurantEndPoint = 'http://data.cityofnewyork.us/resource/xx67-kt59.json?'+ '&dba=' + grand.fsCandidateToNYC.replace(" ", "+");
+        console.log("C: This is our beauriful NYC endPoint that has foursquare restaurant :" + grand.bothRestaurantEndPoint);
+        // grand.AjaxModel(grand.checkRestaurantRating, bothRestaurantEndPoint);
+        $.ajax({
+          url: grand.bothRestaurantEndPoint,
+          success: function(response){
+            console.log("checking FS resto in the NYC Data");
+            console.log("Candidate: " + grand.fsCandidateToNYC);
+            console.log("data to mine if restaurant is rated A or Not: " + response);
+            console.log(response[0].dba);
+            console.log(response[0].grade);
+
+            //checking if restaurant rating is non-critical + rated A
+            // if ( (response[grand.k].grade === "A") && (response[grand.k].critical_flag === "Not Critical")  ) {
+            //     console.log("Restaurant good! Eat at " + response[grand.k].dba);
+            // } else {
+            //   console.log("Critical");
+            //   grand.k +=1;
+            //   grand.fsAction();
+            // }
+          }
+        });
+    },
+
+
 };
 
-grand.geoLocateUser();
 
 var guiObj = {
   createGui: function(){
@@ -341,7 +316,5 @@ var guiObj = {
     "Spanish", "Café/Coffee/Tea"],
 };
 
-
-
-
+grand.geoLocateUser();
 guiObj.createGui();
