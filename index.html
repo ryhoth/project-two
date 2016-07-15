@@ -9,8 +9,7 @@
     <link href='https://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet' type='text/css'>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.js"></script>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.2.4/mapbox.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.2.4/mapbox.css' rel='stylesheet' />
+
   </head>
 
     <body>
@@ -21,12 +20,14 @@
             <div class="inputs" id="inputContainerBoroCuisine"></div>
             <div class="inputs boxes" id="inputContainerNameAddress"></div>
             <div class="inputs" id="inputContainerDate"></div>
-            <button type="button" name="button" class="items" id="submit">Show me Rating</button>
+            <button type="button" name="button" class="items" id="mainSubmit">Show me Rating</button>
             <div id="display"></div>
           </form>
-          <div id='map' class='map'></div>
+          <div id='map'></div>
         </div>
       </div>
+
+
     <!-- Handlebars for XXXX -->
   <script id="nycHealthHandlebars" type="text/x-handlebars-template">
 
@@ -53,6 +54,7 @@
       </ul>
   </script>
 
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWMzaJmU7ZbLuLfrQaxE7Kr29kFIO6ICM&callback=initMap" async defer></script>
   <script type="text/javascript" src="app.js"></script>
   </body>
 </html>
