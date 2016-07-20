@@ -1,15 +1,22 @@
 console.log("loaded");
 
+var date_input=$('input[name="date"]'); //our date input has the name "date"
+var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+var options={
+  format: 'mm/dd/yyyy',
+  container: container,
+  todayHighlight: true,
+  autoclose: true,
+};
+date_input.datepicker(options);
+
+var show = function (){
+  console.log($("#date")[0].value);
+  return $("#date")[0].value
+}
+
 
 var guiObj = {
-  createGui: function(){
-    guiObj.createBoroInput();
-    guiObj.createCuisineDropdown();
-    guiObj.createSpecsInput();
-    guiObj.createDayDropdown();
-    guiObj.createMonthDropdown();
-    guiObj.createYearDropdown();
-  },
   handlebars: function(data, handleBarId, containerId) {
     var source = document.getElementById(handleBarId).innerHTML;
     var template = Handlebars.compile(source);
@@ -18,23 +25,6 @@ var guiObj = {
     elContainer.innerHTML = computedHTML;
   },
   inputContainerBoroCuisine: document.getElementById('inputContainerBoroCuisine'),
-  inputContainerNameAddress: document.getElementById('inputContainerNameAddress'),
-  inputContainerDate: document.getElementById('inputContainerDate'),
-  createInputBox: function(valuePurpose){
-    var el = document.createElement('input');
-    el.type = "text";
-    // el.value = "what?";
-    el.placeholder = valuePurpose;
-    el.setAttribute('id', valuePurpose);
-    el.setAttribute('class', 'inputs boxes');
-    valuePurpose = document.getElementById(valuePurpose);
-    guiObj.inputContainerNameAddress.appendChild(el);
-  },
-  createSpecsInput: function(){
-    for (var spec of guiObj.userSpecs) {
-        guiObj.createInputBox(spec);
-      }
-  },
   createBoroInput: function(){
     selectVar = document.createElement('select');
     selectVar.setAttribute('id', 'boro-dropdown');
@@ -67,48 +57,6 @@ var guiObj = {
     }
   guiObj.inputContainerBoroCuisine.appendChild(selectVar);
   },
-  createMonthDropdown: function(){
-    selectVar = document.createElement('select');
-    selectVar.setAttribute('id', 'month-dropdown');
-    var optionChoose = document.createElement('option');
-    optionChoose.value = "";
-    optionChoose.setAttribute('selected', 'disabled');
-    optionChoose.innerText = "MM";
-    selectVar.appendChild(optionChoose);
-    for (var i=1; i <=12; i++){
-      var option = document.createElement('option');
-      if (i < 10) {
-        option.value = "0"+i;
-        option.innerText = "0"+i;
-      } else {
-      option.value = i;
-      option.innerText = i;
-      }
-      selectVar.appendChild(option);
-    }
-  guiObj.inputContainerDate.appendChild(selectVar);
-  },
-  createDayDropdown: function(){
-    selectVar = document.createElement('select');
-    selectVar.setAttribute('id', 'day-dropdown');
-    var optionChoose = document.createElement('option');
-    optionChoose.value = "";
-    optionChoose.setAttribute('selected', 'disabled');
-    optionChoose.innerText = "DD";
-    selectVar.appendChild(optionChoose);
-    for (var i=1; i <=31; i++){
-      var option = document.createElement('option');
-      if (i < 10) {
-        option.value = "0"+i;
-        option.innerText = "0"+i;
-      } else {
-        option.value = i;
-        option.innerText = i;
-      }
-      selectVar.appendChild(option);
-    }
-  guiObj.inputContainerDate.appendChild(selectVar);
-  },
   createDropdown: function( valueInner, textInner, iInitial, iFinal , displayContainer){
     selectVar = document.createElement('select');
     selectVar.setAttribute('id', 'year-dropdown');
@@ -124,118 +72,114 @@ var guiObj = {
       selectVar.appendChild(option);
     }
     displayContainer.appendChild(selectVar);
-  },
-  createYearDropdown: function(){
-      guiObj.createDropdown("", "YYYY", 2014, 2016, guiObj.inputContainerDate);
-    },
-  userSpecs :["Name", "building", "street", "zip"],
-  boros: ["Brooklyn", "Manhattan", "Bronx", "Queens", 'Staten Island'],
-  cuisines: ["American", "Bakery", "Hamburgers",
-   "Jewish/Kosher", "Delicatessen", "Irish", "Ice Cream, Gelato, Yogurt, Ices",
-  "Hotdogs", "Chicken", "Chinese",
-   "Sandwiches/Salads/Mixed Buffet", "Caribbean",
-   "Donuts", "Bagels/Pretzels", "Continental",
-  "Pizza", "Soul Food", "Italian", "Steak", "Polish",
-   "Latin (Cuban, Dominican, Puerto Rican, South & Central American)",
-   "German", "French", "Pizza/Italian", "Mexican",
-    "Spanish", "Café/Coffee/Tea"],
+  }
 };
 
 
 var grand = {
   map :"",
-  userLong: "",
-  userLat: "",
+  userPosition: "",
+  restaurantPosition: "",
   geocodeURL: "",
   fsQueryLimit: 20,
   fsQueryDesc: "food",
   fsCandidateToNYC: "",
   bothRestaurantEndPoint: "",
   k: 0,
-  building:"",
-  street: "",
-  NYCrestaurantEndPoint: "",
+  providedAddress: false,
+  markerArray: [],
+  pointOnMap: function(position, title){
+    var marker = new google.maps.Marker({
+      position: grand.userPosition,
+      map: grand.map,
+      title: 'You are here!'
+    });
+    grand.markerArray.push(marker);
+  },
 
   geoLocateUser: function(){
     navigator.geolocation.getCurrentPosition(function(position) {
-      console.log("user latitude " + position.coords.latitude);
-      console.log("user longitude " + position.coords.longitude);
-      grand.userLat = position.coords.latitude;
-      grand.userLong = position.coords.longitude;
-      var marker = new google.maps.Marker({
-        position: { lat: grand.userLat, lng: grand.userLong },
-        map: grand.map,
-        title: 'Hello World!',
-      });
+      grand.userPosition = { lat: position.coords.latitude, lng: position.coords.longitude };
+      grand.pointOnMap( grand.userPosition, "You are here!" )
 
     //   var fsEndPoint = 'https://api.foursquare.com/v2/venues/search?oauth_token=' + ajaxInfo.fsKey + '&limit=' + grand.fsQueryLimit  + '&ll=' + grand.userLat + ',' + grand.userLong + '&query=' + grand.fsQueryDesc;
     //   grand.AjaxModel(grand.fsAction, fsEndPoint);
     });
   },
 
-  // pointOnMap:function(longitude, latitude, color){
-  var marker = new google.maps.Marker({
-    position: { lat: latitude , lng: longitude },
-    map: grand.map,
-    title: 'Hello World!',
-  });
+  submitEvent: document.getElementById('submit').addEventListener('click', function(){
+    var NYCrestaurantEndPoint = 'http://data.cityofnewyork.us/resource/xx67-kt59.json?';
+    var date = $("#date")[0].value.replace("/", "-");
+    var address = $("#address")[0].value
+    var name = $("#name")[0].value
 
-  // },
+      if (!name) {
+        alert("Please provide a restaurant name.")
+      } else {
+        if ( address ) {
+          grand.providedAddress = true;
+           $.ajax({
+            url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + escape(address) + '&key=' + ajaxInfo.googKey,
+            success: function(response) {
 
-  submitRestaurantForm: function(NYCdbResponse1){
-    grand.geocodeURL = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + grand.building + '+' + grand.street +',+New+York,+NY&key=' + ajaxInfo.googKey;
-    $.ajax({
-      url: grand.geocodeURL,
-      success: function(longLatFromAddresss){
-        // grand.pointOnMap(longLatFromAddresss.results[0].geometry.location.lat , longLatFromAddresss.results[0].geometry.location.lng, '#9CBA7F' );
+              if (name) {
+                NYCrestaurantEndPoint += '&dba=' + escape(name);
+              }
+
+              if ( date ) {
+                NYCrestaurantEndPoint += '$where=(inspection_date%3E=%27' + date +'%27)';
+              }
+
+              var addressComponents = response.results[0].address_components
+
+              console.log("Response from geocode: ", response);
+                NYCrestaurantEndPoint += '&building=' + escape(addressComponents[0].long_name) +'&street=' + escape(addressComponents[1].long_name) + '&zipcode=' + escape(addressComponents[8].long_name);
+                grand.restaurantPosition = {lat: response.results[0].geometry.location.lat, lng: response.results[0].geometry.location.lng};
+
+                grand.pointOnMap(grand.restaurantPosition, 'Restaurant')
+
+                grand.getNYCdata(NYCrestaurantEndPoint)
+            }
+          })
+
+      } else {
+        if (name) {
+          NYCrestaurantEndPoint += '&dba=' + escape(name);
+        }
+
+        if ( date ) {
+          NYCrestaurantEndPoint += '$where=(inspection_date%3E=%27' + date +'%27)';
+        }
+
+        grand.getNYCdata(NYCrestaurantEndPoint)
       }
-    });
-    var context = {};
-    context.resto = NYCdbResponse1;
-    guiObj.handlebars(context, 'nycHealthHandlebars', 'display');
-  },
+    }
 
-  submitButton:"" ,
-
-  submitEvent: document.getElementById('mainSubmit').addEventListener('click', function(){
-    NYCrestaurantEndPoint = 'http://data.cityofnewyork.us/resource/xx67-kt59.json?';
-    var yearSelected = document.getElementById('year-dropdown');
-    var monthSelected = document.getElementById('month-dropdown');
-    var daySelected = document.getElementById('day-dropdown');
-    if ((yearSelected.value.length > 0) && (monthSelected.value.length > 0) && (daySelected.value.length > 0) ) {
-      NYCrestaurantEndPoint += '$where=(inspection_date>=%27' + yearSelected.value + '-' + monthSelected.value + '-' + daySelected.value +'%27)';
-    }
-    var boroSelected = document.getElementById('boro-dropdown');
-    if (boroSelected.value.length > 0 ){ //We could force the user to choose a borough later
-      NYCrestaurantEndPoint += '&boro=' + boroSelected.value.replace(" ", "+");
-    }
-    if (building.value.length > 0) {
-      NYCrestaurantEndPoint += '&building=' + building.value.replace(" ", "+");
-      grand.building = building.value.replace(" ", "+");
-    }
-    if (street.value.length > 0) {
-      NYCrestaurantEndPoint += '&street=' + street.value.replace(" ", "+");
-      grand.street = street.value.replace(" ", "+");
-    }
-    if (Name.value.length > 0) {
-      NYCrestaurantEndPoint += '&dba=' + escape(Name.value.replace(" ", "+"));
-    }
-    if (zip.value.length > 0) {
-      NYCrestaurantEndPoint += '&zipcode=' + zip.value.replace(" ", "+");
-    }
-    var cuisineSelected = document.getElementById('cuisine-dropdown');
-    if (cuisineSelected.value.length > 0) {
-      NYCrestaurantEndPoint += '&cuisine_description=' + cuisineSelected.value.replace(" ", "+") + "+";
-    }
-    grand.AjaxModel( grand.submitRestaurantForm , NYCrestaurantEndPoint );
   }),
-  AjaxModel: function(functionToCall, endPoint) {
-     $.ajax({
-      url: endPoint,
-      success: function(response) {
-        functionToCall(response);
-      },
-    });
+
+  //   grand.AjaxModel( grand.geoLocate , NYCrestaurantEndPoint );
+
+  getNYCdata: function(NYCdb){
+    $.ajax({
+     url: NYCdb,
+     success: function(data) {
+       console.log("response from NY DB: ", data);
+
+       if (!grand.providedAddress){
+         var address = data[0].building + '&' + data[0].street + '&' + data[0].zipcode
+         $.ajax({
+          url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + escape(address) + '&key=' + ajaxInfo.googKey,
+          success: function(response) {
+            grand.restaurantPosition = {lat: response.results[0].geometry.location.lat, lng: response.results[0].geometry.location.lng};
+            grand.pointOnMap(grand.restaurantPosition, 'Restaurant')
+            }
+          })
+        }
+      var context = {};
+      context.resto = data;
+      guiObj.handlebars(context, 'nycHealthHandlebars', 'display');
+      }
+    })
   },
 
   checkRestaurantRating: function(dataTEST){
@@ -287,19 +231,18 @@ var grand = {
 
 };
 
-
-grand.geoLocateUser();
-
-var initMap = function () {
-  // Create a map object and specify the DOM element for display.
-
-  grand.map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: (grand.userLat|| 40.730610), lng: (grand.userLong || -74)},
-    scrollwheel: false,
-    zoom: 10
-  });
-}
+// $(document).ready(function() {
+  grand.geoLocateUser();
 
 
 
-guiObj.createGui();
+  var initMap = function () {
+    // Create a map object and specify the DOM element for display.
+
+    grand.map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: (grand.userLat|| 40.730610), lng: (grand.userLong || -74)},
+      scrollwheel: false,
+      zoom: 10
+    });
+  }
+// }

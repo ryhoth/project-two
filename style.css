@@ -5,45 +5,12 @@
 
 body {
   background-color: white;
-  margin: 0vw;
   font-family: 'Quicksand', sans-serif;
   font-style: bold;
   color: white
 }
 
-.container {
-  display: flex;
-  align-content: center;
-  justify-content: flex-start;
-  flex-direction: row;
-  margin: 0vw;
-  margin-top: 0vw;
-  /*height: 100vw auto;*/
-}
-
-.all-container {
-  width: 70vw;
-  margin: 0vw;
-  padding: 0vw;
-  /*border-radius: 10%;*/
-  border: 0vw solid grey;
-  background-color: #4099FF;
-  display: flex;
-  align-content: center;
-  justify-content: flex-start;
-  flex-direction: row;
-  /*height: 100%*/
-}
-
-form {
-  /*height: 100% auto;*/
-  margin: 0;
-  margin: 0vw;
-  margin-right: 1vw;
-
-}
-
-.cards {
+/*.cards {
   border: 0vw solid gray;
   padding: 0px;
   margin: 0vw;
@@ -56,45 +23,8 @@ form {
   width: 30vw;
   height: 25vw;
   color: grey;
-}
+}*/
 
 #map {
-  position:fixed;
-  width: 40vw;
-  height: 40vw%;
-  margin: 0vw;
-  right: 0vw;
-  margin-top: 0vw;
-  /*border: 0.5vw solid grey;*/
-}
-
-.topHeader {
-  display: flex;
-  justify-content: center;
-}
-
-.subHeader {
-  display: flex;
-  justify-content: center;
-}
-
-.inputs {
-  display: flex;
-  justify-content: space-around;
-  /*flex-direction: column;*/
-
-}
-
-.items {
-  display: flex;
-  justify-content: center;
-  margin: 0 auto;
-}
-
-.boxes {
-  display: flex;
-  /*justify-content: center;*/
-  flex-direction: column;
-  justify-content: center;
-  width: 15vw;
+  height: 200px;
 }
