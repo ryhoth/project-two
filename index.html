@@ -33,11 +33,87 @@
       </div>
 
     <!-- Handlebars for XXXX -->
-  <script id="nycHealthHandlebars" type="text/x-handlebars-template">
+  <script id="nycHealthHandlebarsA" type="text/x-handlebars-template">
+    <hr>
+    <h1 class="">{{dba}} Hygene Inspections</h1>
+    {{#each resto}}
+    <hr>
+      <div class="card col-md-6">
+        <div class="card-block">
+          <h4 class="card-title">{{critical_flag}}</h4>
+          <h6 class="card-subtitle text-muted">{{grade_date}}</h6>
+        </div>
+        <img src="https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_A_v2.jpg" alt="Card image">
+        <div class="card-block">
+          <p class="card-text">{{violation_description}}</p>
+        </div>
+      </div>
+    {{/each}}
+  </script>
 
-      <h1 class="subHeader">Complaint Cards</h1>
-      <ul>
+  <script id="nycHealthHandlebarsB" type="text/x-handlebars-template">
+    <hr>
+    <h1 class="">{{dba}} Hygene Inspections</h1>
+    {{#each resto}}
+    <hr>
+      <div class="card col-md-6">
+        <div class="card-block">
+          <h4 class="card-title">{{critical_flag}}</h4>
+          <h6 class="card-subtitle text-muted">{{grade_date}}</h6>
+        </div>
+        <img src="https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_B_v2.jpg" alt="Card image">
+        <div class="card-block">
+          <p class="card-text">{{violation_description}}</p>
+        </div>
+      </div>
+    {{/each}}
+  </script>
+
+  <script id="nycHealthHandlebarsC" type="text/x-handlebars-template">
+    <hr>
+    <h1 class="">{{dba}} Hygene Inspections</h1>
+    {{#each resto}}
+    <hr>
+      <div class="card col-md-6">
+        <div class="card-block">
+          <h4 class="card-title">{{critical_flag}}</h4>
+          <h6 class="card-subtitle text-muted">{{grade_date}}</h6>
+        </div>
+        <img src="https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_C_v2.jpg" alt="Card image">
+        <div class="card-block">
+          <p class="card-text">{{violation_description}}</p>
+        </div>
+      </div>
+    {{/each}}
+  </script>
+
+  <script id="nycHealthHandlebarsP" type="text/x-handlebars-template">
+    <hr>
+    <h1 class="">{{dba}} Hygene Inspections</h1>
+    {{#each resto}}
+    <hr>
+      <div class="card col-md-6">
+        <div class="card-block">
+          <h4 class="card-title">{{critical_flag}}</h4>
+          <h6 class="card-subtitle text-muted">{{grade_date}}</h6>
+        </div>
+        <img src="http://lettergradeconsulting.com/wp-content/uploads/2013/09/Screen-Shot-2013-09-16-at-12.21.55-PM1-e1379351326492.pngs" alt="Card image">
+        <div class="card-block">
+          <p class="card-text">{{violation_description}}</p>
+        </div>
+      </div>
+    {{/each}}
+  </script>
+
+    <!-- https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_B_v2.jpg -->
+    <!-- https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_C_v2.jpg -->
+    <!-- https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_A_v2.jpg -->
+    <!-- http://lettergradeconsulting.com/wp-content/uploads/2013/09/Screen-Shot-2013-09-16-at-12.21.55-PM1-e1379351326492.png -->
+
+
+      <!-- <ul>
         {{#each resto}}
+
           <br>
           <div class="cards">
           <li>Grade:{{grade}} ({{critical_flag}}) {{grade_date}} </li>
@@ -48,15 +124,15 @@
           <li>camis: {{camis}}</li>
           <li>{{building}} {{street}}</li>
           <li>{{boro}}, NY {{zipcode}}</li>
-          <li>Phone: {{phone}}</li>
+          <li>Phone: {{phone}}</li> -->
 
           <!-- <li>Inspection_type: {{inspection_type}}</li>  -->
           <!-- <li>Record Date: {{record_date}}</li> -->
           <!-- <li>Action: {{action}}</li> -->
-          </div>
+          <!-- </div>
         {{/each}}
-      </ul>
-  </script>
+      </ul> -->
+
 
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWMzaJmU7ZbLuLfrQaxE7Kr29kFIO6ICM&callback=initMap" async defer></script>
   <!-- Latest compiled and minified CSS -->

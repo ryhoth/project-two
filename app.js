@@ -20,59 +20,10 @@ var guiObj = {
   handlebars: function(data, handleBarId, containerId) {
     var source = document.getElementById(handleBarId).innerHTML;
     var template = Handlebars.compile(source);
-    var computedHTML = template(data);
     var elContainer = document.getElementById(containerId);
+    var computedHTML = template(data);
     elContainer.innerHTML = computedHTML;
   },
-  inputContainerBoroCuisine: document.getElementById('inputContainerBoroCuisine'),
-  createBoroInput: function(){
-    selectVar = document.createElement('select');
-    selectVar.setAttribute('id', 'boro-dropdown');
-    var optionChoose = document.createElement('option');
-    optionChoose.value = "";
-    optionChoose.setAttribute('selected', 'disabled');
-    optionChoose.innerText = "Borough";
-    selectVar.appendChild(optionChoose);
-    for (borough of guiObj.boros){
-      var optionBoro = document.createElement('option');
-      optionBoro.value = borough;
-      optionBoro.innerText = borough;
-      selectVar.appendChild(optionBoro);
-    }
-  guiObj.inputContainerBoroCuisine.appendChild(selectVar);
-  },
-  createCuisineDropdown: function(){
-    selectVar = document.createElement('select');
-    selectVar.setAttribute('id', 'cuisine-dropdown');
-    var optionChoose = document.createElement('option');
-    optionChoose.value = "";
-    optionChoose.setAttribute('selected', 'disabled');
-    optionChoose.innerText = "Cuisine";
-    selectVar.appendChild(optionChoose);
-    for (cuisine of guiObj.cuisines){
-      var optionCuisine = document.createElement('option');
-      optionCuisine.value = cuisine;
-      optionCuisine.innerText = cuisine;
-      selectVar.appendChild(optionCuisine);
-    }
-  guiObj.inputContainerBoroCuisine.appendChild(selectVar);
-  },
-  createDropdown: function( valueInner, textInner, iInitial, iFinal , displayContainer){
-    selectVar = document.createElement('select');
-    selectVar.setAttribute('id', 'year-dropdown');
-    var optionChoose = document.createElement('option');
-    optionChoose.value = valueInner;
-    optionChoose.setAttribute('selected', 'disabled');
-    optionChoose.innerText = textInner;
-    selectVar.appendChild(optionChoose);
-    for (var i= iInitial; i <= iFinal; i++){
-      var option = document.createElement('option');
-      option.value = i;
-      option.innerText = i;
-      selectVar.appendChild(option);
-    }
-    displayContainer.appendChild(selectVar);
-  }
 };
 
 
@@ -177,7 +128,19 @@ var grand = {
         }
       var context = {};
       context.resto = data;
-      guiObj.handlebars(context, 'nycHealthHandlebars', 'display');
+        if ( data[0].grade == "A") {
+          console.log("WERE IN A");
+          guiObj.handlebars(context, 'nycHealthHandlebarsA', 'display');
+        } else if ( data[0].grade == "B") {
+          console.log("WERE IN B");
+          guiObj.handlebars(context, 'nycHealthHandlebarsB', 'display');
+        }else if ( data[0].grade == "C" ) {
+          console.log("WERE IN C");
+          guiObj.handlebars(context, 'nycHealthHandlebarsC', 'display');
+        } else {
+          console.log("WERE IN P");
+          guiObj.handlebars(context, 'nycHealthHandlebarsP', 'display');
+        }
       }
     })
   },
