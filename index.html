@@ -32,121 +32,117 @@
         <div id="display"></div>
       </div>
 
-    <!-- Handlebars for XXXX -->
-  <script id="nycHealthHandlebarsA" type="text/x-handlebars-template">
-    <hr>
-    <h1 class="">{{dba}} Hygene Inspections</h1>
-    {{#each resto}}
-    <hr>
-      <div class="card col-md-6">
-        <div class="card-block">
-          <h4 class="card-title">{{critical_flag}}</h4>
-          <h6 class="card-subtitle text-muted">{{grade_date}}</h6>
+      <!-- Handlebars for XXXX -->
+    <script id="nycHealthHandlebarsA" type="text/x-handlebars-template">
+      <hr>
+      <h1 class="">{{dba}} Hygene Inspections</h1>
+      {{#each resto}}
+        <div class="card col-md-6 col-md-offset-3">
+          <div class="card-block">
+            <h4 class="card-title">{{critical_flag}}</h4>
+            <h6 class="card-subtitle text-muted">{{grade_date}}</h6>
+          </div>
+          <img src="https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_A_v2.jpg" alt="Card image">
+          <div class="card-block">
+            <p class="card-text">{{violation_description}}</p>
+          </div>
         </div>
-        <img src="https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_A_v2.jpg" alt="Card image">
-        <div class="card-block">
-          <p class="card-text">{{violation_description}}</p>
+      {{/each}}
+    </script>
+
+    <script id="nycHealthHandlebarsB" type="text/x-handlebars-template">
+      <hr>
+      <h1 class="">{{dba}} Hygene Inspections</h1>
+      {{#each resto}}
+        <div class="card col-md-6 col-md-offset-3">
+          <div class="card-block">
+            <h4 class="card-title">{{critical_flag}}</h4>
+            <h6 class="card-subtitle text-muted">{{grade_date}}</h6>
+          </div>
+          <img src="https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_B_v2.jpg" alt="Card image">
+          <div class="card-block">
+            <p class="card-text">{{violation_description}}</p>
+          </div>
         </div>
-      </div>
-    {{/each}}
-  </script>
+      {{/each}}
+    </script>
 
-  <script id="nycHealthHandlebarsB" type="text/x-handlebars-template">
-    <hr>
-    <h1 class="">{{dba}} Hygene Inspections</h1>
-    {{#each resto}}
-    <hr>
-      <div class="card col-md-6">
-        <div class="card-block">
-          <h4 class="card-title">{{critical_flag}}</h4>
-          <h6 class="card-subtitle text-muted">{{grade_date}}</h6>
+    <script id="nycHealthHandlebarsC" type="text/x-handlebars-template">
+      <h1 class="">{{dba}} Hygene Inspections</h1>
+      {{#each resto}}
+      <hr>
+        <div class="card col-md-6 col-md-offset-3">
+          <div class="card-block">
+            <h4 class="card-title">{{critical_flag}}</h4>
+            <h6 class="card-subtitle text-muted">{{grade_date}}</h6>
+          </div>
+          <img src="https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_C_v2.jpg" alt="Card image">
+          <div class="card-block">
+            <p class="card-text">{{violation_description}}</p>
+          </div>
         </div>
-        <img src="https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_B_v2.jpg" alt="Card image">
-        <div class="card-block">
-          <p class="card-text">{{violation_description}}</p>
+      {{/each}}
+    </script>
+
+    <script id="nycHealthHandlebarsP" type="text/x-handlebars-template">
+      <h1 class="">{{dba}} Hygene Inspections</h1>
+      {{#each resto}}
+      <hr>
+        <div class="card col-md-6 col-md-offset-3">
+          <div class="card-block">
+            <h4 class="card-title">{{critical_flag}}</h4>
+            <h6 class="card-subtitle text-muted">{{grade_date}}</h6>
+          </div>
+          <img src="http://lettergradeconsulting.com/wp-content/uploads/2013/09/Screen-Shot-2013-09-16-at-12.21.55-PM1-e1379351326492.pngs" alt="Card image">
+          <div class="card-block">
+            <p class="card-text">{{violation_description}}</p>
+          </div>
         </div>
-      </div>
-    {{/each}}
-  </script>
+      {{/each}}
+    </script>
 
-  <script id="nycHealthHandlebarsC" type="text/x-handlebars-template">
-    <hr>
-    <h1 class="">{{dba}} Hygene Inspections</h1>
-    {{#each resto}}
-    <hr>
-      <div class="card col-md-6">
-        <div class="card-block">
-          <h4 class="card-title">{{critical_flag}}</h4>
-          <h6 class="card-subtitle text-muted">{{grade_date}}</h6>
-        </div>
-        <img src="https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_C_v2.jpg" alt="Card image">
-        <div class="card-block">
-          <p class="card-text">{{violation_description}}</p>
-        </div>
-      </div>
-    {{/each}}
-  </script>
-
-  <script id="nycHealthHandlebarsP" type="text/x-handlebars-template">
-    <hr>
-    <h1 class="">{{dba}} Hygene Inspections</h1>
-    {{#each resto}}
-    <hr>
-      <div class="card col-md-6">
-        <div class="card-block">
-          <h4 class="card-title">{{critical_flag}}</h4>
-          <h6 class="card-subtitle text-muted">{{grade_date}}</h6>
-        </div>
-        <img src="http://lettergradeconsulting.com/wp-content/uploads/2013/09/Screen-Shot-2013-09-16-at-12.21.55-PM1-e1379351326492.pngs" alt="Card image">
-        <div class="card-block">
-          <p class="card-text">{{violation_description}}</p>
-        </div>
-      </div>
-    {{/each}}
-  </script>
-
-    <!-- https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_B_v2.jpg -->
-    <!-- https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_C_v2.jpg -->
-    <!-- https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_A_v2.jpg -->
-    <!-- http://lettergradeconsulting.com/wp-content/uploads/2013/09/Screen-Shot-2013-09-16-at-12.21.55-PM1-e1379351326492.png -->
+      <!-- https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_B_v2.jpg -->
+      <!-- https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_C_v2.jpg -->
+      <!-- https://media2.wnyc.org/i/200/0/c/80/photologue/photos/Grade%20Card_A_v2.jpg -->
+      <!-- http://lettergradeconsulting.com/wp-content/uploads/2013/09/Screen-Shot-2013-09-16-at-12.21.55-PM1-e1379351326492.png -->
 
 
-      <!-- <ul>
-        {{#each resto}}
+        <!-- <ul>
+          {{#each resto}}
 
-          <br>
-          <div class="cards">
-          <li>Grade:{{grade}} ({{critical_flag}}) {{grade_date}} </li>
-          <li>{{dba}} ({{cuisine_description}})</li>
-          <li>Inspection_date: {{inspection_date}}</li>
-          <li>Violation: {{violation_code}} {{violation_description}}</li>
-          <li>Score: {{score}}</li>
-          <li>camis: {{camis}}</li>
-          <li>{{building}} {{street}}</li>
-          <li>{{boro}}, NY {{zipcode}}</li>
-          <li>Phone: {{phone}}</li> -->
+            <br>
+            <div class="cards">
+            <li>Grade:{{grade}} ({{critical_flag}}) {{grade_date}} </li>
+            <li>{{dba}} ({{cuisine_description}})</li>
+            <li>Inspection_date: {{inspection_date}}</li>
+            <li>Violation: {{violation_code}} {{violation_description}}</li>
+            <li>Score: {{score}}</li>
+            <li>camis: {{camis}}</li>
+            <li>{{building}} {{street}}</li>
+            <li>{{boro}}, NY {{zipcode}}</li>
+            <li>Phone: {{phone}}</li> -->
 
-          <!-- <li>Inspection_type: {{inspection_type}}</li>  -->
-          <!-- <li>Record Date: {{record_date}}</li> -->
-          <!-- <li>Action: {{action}}</li> -->
-          <!-- </div>
-        {{/each}}
-      </ul> -->
-
-
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWMzaJmU7ZbLuLfrQaxE7Kr29kFIO6ICM&callback=initMap" async defer></script>
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
-  <!-- Latest compiled and minified JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+            <!-- <li>Inspection_type: {{inspection_type}}</li>  -->
+            <!-- <li>Record Date: {{record_date}}</li> -->
+            <!-- <li>Action: {{action}}</li> -->
+            <!-- </div>
+          {{/each}}
+        </ul> -->
 
 
-  <link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" />
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWMzaJmU7ZbLuLfrQaxE7Kr29kFIO6ICM&callback=initMap" async defer></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
 
-  <script type="text/javascript" src="app.js"></script>
+    <link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+
+
+    <script type="text/javascript" src="app.js"></script>
   </body>
 </html>
